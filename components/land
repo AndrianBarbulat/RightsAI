@@ -1,0 +1,22 @@
+const STEPS = [
+  { number: '1', icon: '\u270E', title: 'Ask', desc: 'Type your question in plain English — no legal jargon needed.' },
+  { number: '2', icon: '\u2696', title: 'Receive', desc: 'Get a structured answer with Irish Acts and sections cited.' },
+  { number: '3', icon: '\u2192', title: 'Act', desc: 'Follow practical next steps or connect to official resources.' },
+];
+
+export default function HowItWorks() {
+  return (
+    <section className="how-it-works">
+      <h2 className="how-it-works__title">How It Works</h2>
+      <div className="how-it-works__steps">
+        {STEPS.map((step) => (
+          <div key={step.number}>
+            <div className="how-it-works__step-icon">{step.icon}</div>
+            <h3 className="how-it-works__step-title">{step.title}</h3>
+            <p className="how-it-works__step-desc">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
