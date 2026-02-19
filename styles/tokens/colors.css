@@ -1,0 +1,65 @@
+/* ==============================================
+   Design Tokens — Colours
+   RightsAI Design System
+   ============================================== */
+
+:root {
+  /* ---- Core Brand ---- */
+  --color-navy: #0f2240;
+  --color-navy-dark: #091829;
+  --color-navy-light: #1a3a5c;
+  --color-gold: #c9973a;
+  --color-gold-light: #e8bc6a;
+  --color-gold-muted: #f5e6c8;
+  --color-cream: #f8f6f1;
+  --color-cream-dark: #ede9e0;
+
+  /* ---- Semantic ---- */
+  --color-success: #1a7a4a;
+  --color-success-bg: #e8f5ee;
+  --color-warning: #9a6200;
+  --color-warning-bg: #fef3cd;
+  --color-error: #c0392b;
+  --color-error-bg: #fdecea;
+  --color-info: #1a5276;
+  --color-info-bg: #eaf2fb;
+
+  /* ---- Surfaces ---- */
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f8f6f1;
+  --color-surface-3: #ede9e0;
+
+  /* ---- Text ---- */
+  --color-text-primary: #1a1a2e;
+  --color-text-secondary: #5a6475;
+  --color-text-muted: #8a94a0;
+  --color-text-inverse: #ffffff;
+
+  /* ---- Border ---- */
+  --color-border: #e0ddd5;
+}
+
+/* ---- Dark Mode ---- */
+
+[data-theme="dark"] {
+  --color-cream: #12131a;
+  --color-cream-dark: #0d0e14;
+  --color-surface-1: #1a1d27;
+  --color-surface-2: #21263a;
+  --color-surface-3: #2a3048;
+  --color-navy: #2a3a5c;
+  --color-navy-dark: #1a2a4a;
+  --color-navy-light: #3a4a6c;
+  --color-text-primary: #e8eaf0;
+  --color-text-secondary: #9aa3b5;
+  --color-text-muted: #6b7280;
+  --color-text-inverse: #ffffff;
+  --color-gold: #d4a84b;
+  --color-gold-light: #e8bc6a;
+  --color-gold-muted: #3d3520;
+  --color-border: #2a3048;
+  --color-success-bg: #143020;
+  --color-warning-bg: #3d2e00;
+  --color-error-bg: #3d1515;
+  --color-info-bg: #102840;
+}
