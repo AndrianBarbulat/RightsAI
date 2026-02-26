@@ -1,0 +1,46 @@
+/* Topic & Guide & Glossary & About pages + breadcrumbs + errors + skeleton */
+.topic-page { max-width:900px;margin:0 auto;padding:var(--space-8); }
+.topic-page__header { margin-bottom:var(--space-8); }
+.topic-page__title { font-size:var(--text-h1);font-weight:700;color:var(--color-navy);margin-bottom:var(--space-3); }
+.topic-page__desc { font-size:var(--text-body);color:var(--color-text-secondary);line-height:var(--leading-body);max-width:650px; }
+.topic-page__acts { display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-4); }
+.topic-page__questions { margin-bottom:var(--space-8); }
+.topic-page__question { border:1px solid var(--color-border);border-radius:var(--radius-md);background-color:var(--color-surface-1);margin-bottom:var(--space-2);overflow:hidden; }
+.topic-page__cta { text-align:center;padding:var(--space-8);background-color:var(--color-navy);border-radius:var(--radius-xl);color:var(--color-text-inverse);margin-bottom:var(--space-8); }
+
+.guide-page { max-width:760px;margin:0 auto;padding:var(--space-8); }
+.guide-page__header { margin-bottom:var(--space-8); }
+.guide-page__title { font-size:var(--text-h1);font-weight:700;color:var(--color-navy);margin-bottom:var(--space-3); }
+.guide-page__meta { display:flex;align-items:center;gap:var(--space-4);font-size:var(--text-small);color:var(--color-text-muted); }
+.guide-page__step { background-color:var(--color-surface-1);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:var(--space-6);margin-bottom:var(--space-4); }
+.guide-page__step-number { font-size:var(--text-micro);font-weight:600;color:var(--color-gold);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:var(--space-2); }
+
+.glossary-page { max-width:900px;margin:0 auto;padding:var(--space-8); }
+.glossary-page__search { width:100%;padding:var(--space-3) var(--space-5);border:1px solid var(--color-border);border-radius:var(--radius-full);font-family:var(--font-body);font-size:var(--text-body);color:var(--color-text-primary);outline:none;margin-bottom:var(--space-6); }
+.glossary-page__alphabet { display:flex;flex-wrap:wrap;gap:var(--space-1);margin-bottom:var(--space-6); }
+.glossary-page__letter { width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-size:var(--text-small);font-weight:600;color:var(--color-text-secondary);background-color:var(--color-surface-2);cursor:pointer;border:none;transition:background-color var(--transition-fast); }
+.glossary-page__letter:hover { background-color:var(--color-gold-muted);color:var(--color-navy); }
+.glossary-page__term { border-bottom:1px solid var(--color-border);padding:var(--space-4) 0;cursor:pointer; }
+.glossary-page__term-title { font-size:var(--text-h3);font-weight:600;color:var(--color-navy);margin-bottom:var(--space-1); }
+.glossary-page__term-desc { font-size:var(--text-small);color:var(--color-text-secondary);line-height:var(--leading-small); }
+
+.about-page { max-width:800px;margin:0 auto;padding:var(--space-8); }
+.about-page__section { margin-bottom:var(--space-10); }
+.about-page__title { font-size:var(--text-h1);font-weight:700;color:var(--color-navy);margin-bottom:var(--space-3); }
+.about-page__heading { font-size:var(--text-h2);font-weight:600;color:var(--color-navy);margin-bottom:var(--space-3); }
+.about-page__text { font-size:var(--text-body);color:var(--color-text-secondary);line-height:var(--leading-body); }
+
+.breadcrumbs { display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-small);color:var(--color-text-muted);margin-bottom:var(--space-4); }
+.breadcrumbs__link { color:var(--color-text-muted); }
+.breadcrumbs__link:hover { color:var(--color-gold); }
+.breadcrumbs__separator { color:var(--color-text-muted); }
+
+.error-page { display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:var(--space-8); }
+.error-page__code { font-size:6rem;font-weight:700;color:var(--color-gold);font-family:var(--font-display);line-height:1; }
+.error-page__title { font-size:var(--text-h1);font-weight:700;color:var(--color-navy);margin-bottom:var(--space-3); }
+.error-page__text { font-size:var(--text-body);color:var(--color-text-secondary);margin-bottom:var(--space-6);max-width:400px; }
+
+.skeleton { background:linear-gradient(90deg,var(--color-surface-2) 25%,var(--color-surface-3) 50%,var(--color-surface-2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius-sm); }
+.skeleton--text { height:14px;margin-bottom:var(--space-2);width:100%; }
+.skeleton--text-short { width:60%; }
+.skeleton--card { height:120px;border-radius:var(--radius-lg); }
