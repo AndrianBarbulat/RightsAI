@@ -1,0 +1,52 @@
+/* ==============================================
+   Responsive + Print + Reduced Motion
+   ============================================== */
+
+@media (max-width:1024px) {
+  .footer__grid { grid-template-columns:1fr 1fr; }
+  .topic-grid { grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); }
+  .hero__headline { font-size:1.8rem;line-height:2.2rem; }
+  .trust-bar { grid-template-columns:repeat(2,1fr);gap:var(--space-6); }
+  .how-it-works__steps { grid-template-columns:1fr;gap:var(--space-6); }
+}
+
+@media (max-width:768px) {
+  .navbar__links { display:none; }
+  .navbar__hamburger { display:block; }
+  .hero__headline { font-size:1.5rem;line-height:1.8rem; }
+  .footer__grid { grid-template-columns:1fr; }
+  .chat-page__main { margin-left:0; }
+  .sidebar { display:none; }
+  .sidebar--mobile-open { display:flex;position:fixed;left:0;width:100vw;z-index:1000; }
+  .legal-response { max-width:95%; }
+  .user-message { max-width:85%; }
+  .welcome-state__cards { grid-template-columns:1fr; }
+  .trust-bar { grid-template-columns:1fr; }
+  .topic-grid { grid-template-columns:1fr; }
+}
+
+@media (max-width:480px) {
+  .navbar { padding:0 var(--space-4); }
+  .hero { padding:var(--space-16) var(--space-4) var(--space-10); }
+  .hero__chips { gap:var(--space-1); }
+  .hero__chip { padding:var(--space-1) var(--space-3);font-size:var(--text-micro); }
+  .chat-input-area { padding:var(--space-3) var(--space-4); }
+  .topic-page,.guide-page,.glossary-page,.about-page { padding:var(--space-4); }
+}
+
+/* Print */
+@media print {
+  .navbar,.sidebar,.chat-input-area,.chips-row,.legal-response__actions,.chat-bubble-fab,.theme-toggle,.nav-drawer,.preferences-panel,.toast,.hero__chips,.hero__search { display:none !important; }
+  body { background-color:white !important;color:black !important;font-size:12pt; }
+  .chat-page__main { margin-left:0 !important; }
+  .legal-response { border:1px solid #ccc !important;box-shadow:none !important; }
+  .print-header { display:block !important;text-align:center;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid #333; }
+  .print-footer { display:block !important;text-align:center;margin-top:16px;padding-top:12px;border-top:2px solid #333;font-size:9pt;color:#666; }
+}
+.print-header,.print-footer { display:none; }
+
+/* Reduced Motion */
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important; }
+  html { scroll-behavior:auto; }
+}
