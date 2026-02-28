@@ -31,6 +31,7 @@ yarn-error.log*
 serverParam.txt
 # vercel
 .vercel
-
+commit.ps1
+do-commit.ps1
 # turbo
 .turbo
