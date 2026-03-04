@@ -38,23 +38,25 @@ export default async function handler(req, res) {
   try {
     const genAI = new GoogleGenAI({ apiKey });
 
-    const contents = [
-      { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
-      { role: 'model', parts: [{ text: 'Understood. I will provide Irish legal information in the structured JSON format you specified, with topics, summaries, legislation, key rights, next steps, resources, and a disclaimer.' }] },
-      ...history.filter(m => m.role === 'user' || m.role === 'model').map(m => ({
+    // Convert history to Gemini format — no system prompt in contents
+    const contents = history
+      .filter(m => m.role === 'user' || m.role === 'model')
+      .map(m => ({
         role: m.role,
         parts: m.parts || [{ text: typeof m.content === 'string' ? m.content : '' }],
-      })),
-    ];
+      }));
 
     const response = await genAI.models.generateContent({
-      model: 'gemini-2.0-flash-lite',
-      contents,
+      model: 'gemini-3.1-flash-lite',
       config: {
+        systemInstruction: SYSTEM_PROMPT,
         temperature: 0.3,
         topP: 0.9,
-        maxOutputTokens: 1500,
+        topK: 40,
+        maxOutputTokens: 2048,
+        responseMimeType: 'application/json',
       },
+      contents,
     });
 
     const text = response.text;
@@ -63,24 +65,15 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Empty response from Gemini API' });
     }
 
-    // Try to parse structured JSON from the response
+    // responseMimeType enforces JSON output — parse directly
     let structured;
     try {
-      // Find JSON block in response (may be wrapped in markdown code fences)
+      structured = JSON.parse(text);
+    } catch {
+      // Fallback: try to find JSON block in response
       const jsonMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/) || text.match(/(\{[\s\S]*\})/);
       const jsonStr = jsonMatch ? jsonMatch[1] || jsonMatch[0] : text;
       structured = JSON.parse(jsonStr);
-    } catch {
-      // Fallback: treat as unstructured response
-      structured = {
-        topic: 'Irish Law',
-        summary: text,
-        legislation: [],
-        keyRights: [],
-        nextSteps: [],
-        resources: ['https://www.citizensinformation.ie'],
-        disclaimer: 'This is general legal information, not legal advice. Consult a qualified solicitor for advice specific to your situation.',
-      };
     }
 
     return res.status(200).json(structured);
