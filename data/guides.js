@@ -1,3 +1,30 @@
+export const guides = [
+  {
+    slug: 'tenant-deposit-return',
+    title: 'Getting Your Tenancy Deposit Back',
+    description: 'A step-by-step guide on how to recover your deposit if your landlord is withholding it unfairly.',
+    icon: '\u2302',
+  },
+  {
+    slug: 'unfair-dismissal-claim',
+    title: 'Making an Unfair Dismissal Claim',
+    description: 'How to bring a claim to the Workplace Relations Commission if you believe you were unfairly dismissed.',
+    icon: '\u2692',
+  },
+  {
+    slug: 'consumer-complaint',
+    title: 'Making a Consumer Complaint',
+    description: 'Your rights when goods are faulty and how to escalate a complaint through the CCPC and Small Claims Court.',
+    icon: '\uD83D\uDED2',
+  },
+  {
+    slug: 'safety-order-application',
+    title: 'Applying for a Safety or Barring Order',
+    description: 'How to apply for protection orders under the Domestic Violence Act 2018.',
+    icon: '\u26E8',
+  },
+];
+
 export const glossaryTerms = [
   { term: 'Barring Order', definition: 'A court order under the Domestic Violence Act 2018 requiring a person to leave the family home and prohibiting them from returning.', letter: 'B' },
   { term: 'Bunreacht na hÉireann', definition: 'The Constitution of Ireland, enacted in 1937, establishing the State and guaranteeing fundamental rights.', letter: 'B' },
