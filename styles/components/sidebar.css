@@ -3,7 +3,7 @@
 .sidebar-overlay { display:none; }
 .sidebar__swipe-hint { display:none;padding:var(--space-2) 0;justify-content:center; }
 .sidebar__swipe-bar { width:32px;height:4px;border-radius:2px;background-color:var(--color-border); }
-.sidebar__brand { padding:var(--space-4) var(--space-5);display:flex;align-items:center;gap:var(--space-1);font-family:var(--font-display);font-size:var(--text-h3);font-weight:700;color:var(--color-navy);border-bottom:1px solid var(--color-border); }
+.sidebar__brand { padding:var(--space-4) var(--space-5);display:flex;align-items:center;gap:var(--space-1);font-family:var(--font-display);font-size:var(--text-h3);font-weight:700;color:var(--color-text-primary);border-bottom:1px solid var(--color-border); }
 .sidebar__brand-gold { color:var(--color-gold); }
 .sidebar__section { padding:var(--space-4) var(--space-5); }
 .sidebar__section-label { font-size:var(--text-micro);font-weight:600;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:var(--space-2); }
