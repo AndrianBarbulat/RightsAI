@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import Navbar from '../components/layout/Navbar';
 import Hero from '../components/landing/Hero';
 import TrustBar from '../components/landing/TrustBar';
-import TopicGrid from '../components/landing/TopicGrid';
-import HowItWorks from '../components/landing/HowItWorks';
-import ExampleQA from '../components/landing/ExampleQA';
-import ResourcesSection from '../components/landing/ResourcesSection';
-import FAQ from '../components/landing/FAQ';
 import Footer from '../components/layout/Footer';
+
+const TopicGrid = dynamic(() => import('../components/landing/TopicGrid'), {
+  loading: () => <div className="section-placeholder" style={{ height: '400px' }} />,
+});
+const HowItWorks = dynamic(() => import('../components/landing/HowItWorks'), {
+  loading: () => <div className="section-placeholder" style={{ height: '300px' }} />,
+});
+const ExampleQA = dynamic(() => import('../components/landing/ExampleQA'), {
+  loading: () => <div className="section-placeholder" style={{ height: '300px' }} />,
+});
+const ResourcesSection = dynamic(() => import('../components/landing/ResourcesSection'), {
+  loading: () => <div className="section-placeholder" style={{ height: '250px' }} />,
+});
 
 function BackToTop() {
   const [visible, setVisible] = useState(false);
@@ -43,7 +52,6 @@ export default function Home() {
         <HowItWorks />
         <ExampleQA />
         <ResourcesSection />
-        <FAQ />
       </main>
       <BackToTop />
       <Footer />
