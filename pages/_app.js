@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import '../styles/globals.css';
+import ErrorBoundary from '../components/ErrorBoundary';
 import FAB from '../components/ui/FAB';
 import { ToastProvider } from '../components/ui/Toast';
 
@@ -56,13 +57,15 @@ export default function App({ Component, pageProps }) {
 
   return (
     <ToastProvider>
-      <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
-        <a href="#main-content" className="skip-to-main">Skip to main content</a>
-        <div id="main-content">
-          <Component {...pageProps} />
-        </div>
-        <FAB />
-      </ThemeContext.Provider>
+      <ErrorBoundary>
+        <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
+          <a href="#main-content" className="skip-to-main">Skip to main content</a>
+          <div id="main-content">
+            <Component {...pageProps} />
+          </div>
+          <FAB />
+        </ThemeContext.Provider>
+      </ErrorBoundary>
     </ToastProvider>
   );
 }
