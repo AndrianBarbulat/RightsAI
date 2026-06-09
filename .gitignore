@@ -29,9 +29,11 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 serverParam.txt
+serverParam2.txt
 # vercel
 .vercel
 commit.ps1
 do-commit.ps1
 # turbo
-.turbo
+.turboorry
+SKILL.md
