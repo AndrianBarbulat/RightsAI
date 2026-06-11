@@ -63,6 +63,20 @@ export default function ChatPage() {
     }
   }, [messages, isLoading]);
 
+  // Keyboard shortcut: Ctrl+N to start new chat
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+        e.preventDefault();
+        setMessages([]);
+        setCurrentTopic('');
+        setConversationId(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const persistConversation = useCallback((msgs, cid) => {
     const stored = JSON.parse(localStorage.getItem('rightsai_conversations') || '[]');
     const existing = stored.findIndex(c => c.id === cid);
