@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import ThemeToggle from '../ui/ThemeToggle';
@@ -30,10 +30,44 @@ function groupByTime(convs) {
 export default function Sidebar({ isMobileOpen, onClose }) {
   const router = useRouter();
   const [conversations, setConversations] = useState([]);
+  const sidebarRef = useRef(null);
+  const touchStartX = useRef(0);
 
   useEffect(() => {
     setConversations(getStoredConversations());
   }, []);
+
+  // Swipe to close on mobile
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+
+    const handleTouchStart = (e) => {
+      touchStartX.current = e.touches[0].clientX;
+    };
+    const handleTouchEnd = (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      if (dx < -60 && isMobileOpen) {
+        onClose();
+      }
+    };
+    sidebar.addEventListener('touchstart', handleTouchStart, { passive: true });
+    sidebar.addEventListener('touchend', handleTouchEnd, { passive: true });
+    return () => {
+      sidebar.removeEventListener('touchstart', handleTouchStart);
+      sidebar.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isMobileOpen, onClose]);
+
+  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isMobileOpen]);
 
   const groups = groupByTime(conversations);
 
@@ -91,7 +125,16 @@ export default function Sidebar({ isMobileOpen, onClose }) {
 
   return (
     <>
-      <aside className={'sidebar' + (isMobileOpen ? ' sidebar--mobile-open' : '')}>
+      {isMobileOpen && (
+        <div className="sidebar-overlay" onClick={onClose} aria-hidden="true" />
+      )}
+      <aside
+        ref={sidebarRef}
+        className={'sidebar' + (isMobileOpen ? ' sidebar--mobile-open' : '')}
+      >
+        <div className="sidebar__swipe-hint" aria-hidden="true">
+          <span className="sidebar__swipe-bar" />
+        </div>
         {sidebarContent}
       </aside>
     </>
