@@ -6,6 +6,7 @@ import MessageList from './MessageList';
 import SuggestedChips from './SuggestedChips';
 import QuickActionCards from './QuickActionCards';
 import ChatInput from './ChatInput';
+import { useToast } from '../ui/Toast';
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -26,6 +27,7 @@ const WELCOME_GREETING = getGreeting();
 
 export default function ChatPage() {
   const router = useRouter();
+  const addToast = useToast();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -158,8 +160,16 @@ export default function ChatPage() {
     if (action === 'copy') {
       const msg = messages[idx];
       if (msg && msg.structured && msg.structured.summary) {
-        await navigator.clipboard.writeText(msg.structured.summary);
+        try {
+          await navigator.clipboard.writeText(msg.structured.summary);
+          addToast('Copied to clipboard', 'success');
+        } catch {
+          addToast('Failed to copy', 'error');
+        }
       }
+    }
+    if (action === 'save') {
+      addToast('Bookmark saved', 'success');
     }
     if (action === 'helpful' || action === 'not-helpful') {
       fetch('/api/feedback', {
@@ -168,7 +178,7 @@ export default function ChatPage() {
         body: JSON.stringify({ messageIndex: idx, rating: action, topic: currentTopic }),
       }).catch(() => {});
     }
-  }, [messages, currentTopic]);
+  }, [messages, currentTopic, addToast]);
 
   const handleClear = () => {
     setMessages([]);
