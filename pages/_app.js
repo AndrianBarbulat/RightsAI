@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import '../styles/globals.css';
 import FAB from '../components/ui/FAB';
+import { ToastProvider } from '../components/ui/Toast';
 
 export const ThemeContext = createContext({
   theme: 'system',
@@ -54,12 +55,14 @@ export default function App({ Component, pageProps }) {
   }, [theme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
-      <a href="#main-content" className="skip-to-main">Skip to main content</a>
-      <div id="main-content">
-        <Component {...pageProps} />
-      </div>
-      <FAB />
-    </ThemeContext.Provider>
+    <ToastProvider>
+      <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>
+        <a href="#main-content" className="skip-to-main">Skip to main content</a>
+        <div id="main-content">
+          <Component {...pageProps} />
+        </div>
+        <FAB />
+      </ThemeContext.Provider>
+    </ToastProvider>
   );
 }
