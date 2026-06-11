@@ -8,9 +8,18 @@ export default function MessageList({ messages, isLoading, onAction }) {
         if (msg.role === 'user') {
           return <UserMessage key={idx} text={msg.content} time={msg.time} />;
         }
+        if (!msg.structured || typeof msg.structured !== 'object') {
+          return (
+            <div key={idx} className="bot-message">
+              <div className="bot-message__text">
+                {msg.content || 'Sorry, I could not process that response.'}
+              </div>
+            </div>
+          );
+        }
         return (
           <div key={idx} className="bot-message">
-            <BotMessage structured={msg.structured} content={msg.content} />
+            <BotMessage structured={msg.structured} />
             <div className="bot-message__actions">
               <button
                 className="btn btn--ghost btn--sm"
@@ -43,10 +52,6 @@ export default function MessageList({ messages, isLoading, onAction }) {
 }
 
 function BotMessage({ structured }) {
-  if (!structured || typeof structured !== 'object') {
-    return <div className="bot-message__text">Sorry, I could not process that response.</div>;
-  }
-
   const { topic, summary, legislation, keyRights, nextSteps, resources, disclaimer } = structured;
 
   return (
@@ -55,9 +60,12 @@ function BotMessage({ structured }) {
       {summary && <div className="legal-response__summary">{summary}</div>}
 
       {legislation && legislation.length > 0 && (
-        <div className="legal-response__section">
-          <h4 className="legal-response__section-title">{'\u2696'} Relevant Legislation</h4>
-          <ul className="legal-response__list">
+        <div className="response-section">
+          <h4 className="response-section__header">
+            <span className="response-section__header-icon">{'\u2696'}</span>
+            Relevant Legislation
+          </h4>
+          <ul className="response-section__list">
             {legislation.map((act, i) => (
               <li key={i}>{act}</li>
             ))}
@@ -66,9 +74,12 @@ function BotMessage({ structured }) {
       )}
 
       {keyRights && keyRights.length > 0 && (
-        <div className="legal-response__section">
-          <h4 className="legal-response__section-title">{'\u2605'} Your Key Rights</h4>
-          <ul className="legal-response__list">
+        <div className="response-section">
+          <h4 className="response-section__header">
+            <span className="response-section__header-icon">{'\u2605'}</span>
+            Your Key Rights
+          </h4>
+          <ul className="response-section__list">
             {keyRights.map((right, i) => (
               <li key={i}>{right}</li>
             ))}
@@ -77,9 +88,12 @@ function BotMessage({ structured }) {
       )}
 
       {nextSteps && nextSteps.length > 0 && (
-        <div className="legal-response__section">
-          <h4 className="legal-response__section-title">{'\u27A4'} Next Steps</h4>
-          <ol className="legal-response__list">
+        <div className="response-section">
+          <h4 className="response-section__header">
+            <span className="response-section__header-icon">{'\u27A4'}</span>
+            Next Steps
+          </h4>
+          <ol className="response-section__numbered">
             {nextSteps.map((step, i) => (
               <li key={i}>{step}</li>
             ))}
@@ -88,17 +102,20 @@ function BotMessage({ structured }) {
       )}
 
       {resources && resources.length > 0 && (
-        <div className="legal-response__section">
-          <h4 className="legal-response__section-title">{'\u2139'} Official Resources</h4>
-          <ul className="legal-response__list">
+        <div className="response-section">
+          <h4 className="response-section__header">
+            <span className="response-section__header-icon">{'\u2139'}</span>
+            Official Resources
+          </h4>
+          <div className="response-section__sources">
             {resources.map((res, i) => (
-              <li key={i}>
-                <a href={res} target="_blank" rel="noopener noreferrer" className="legal-response__link">
+              <div key={i} className="response-section__source">
+                <a href={res} target="_blank" rel="noopener noreferrer">
                   {res}
                 </a>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       )}
 

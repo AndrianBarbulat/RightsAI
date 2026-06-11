@@ -4,11 +4,11 @@ export default function Hero() {
   return (
     <section className="hero">
       <div className="hero__content">
-        <h1 className="hero__title">
+        <h1 className="hero__headline">
           Know Your Rights.<br />
-          <span className="hero__title-gold">Instantly.</span>
+          <span style={{ color: 'var(--color-gold)' }}>Instantly.</span>
         </h1>
-        <p className="hero__subtitle">
+        <p className="hero__subheadline">
           Free AI-powered Irish legal information. Ask any question about Irish or EU law
           and get a clear, structured answer with legislation cited.
         </p>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Sidebar from '../layout/Sidebar';
 import ChatHeader from './ChatHeader';
@@ -6,8 +6,6 @@ import MessageList from './MessageList';
 import SuggestedChips from './SuggestedChips';
 import QuickActionCards from './QuickActionCards';
 import ChatInput from './ChatInput';
-
-const WELCOME_GREETING = getGreeting();
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -24,6 +22,8 @@ function formatTime() {
   return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+const WELCOME_GREETING = getGreeting();
+
 export default function ChatPage() {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -31,7 +31,18 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [currentTopic, setCurrentTopic] = useState('');
   const [conversationId, setConversationId] = useState(null);
+  const messagesEndRef = useRef(null);
 
+  // Hide FAB on chat page
+  useEffect(() => {
+    const fab = document.querySelector('.fab');
+    if (fab) fab.style.display = 'none';
+    return () => {
+      if (fab) fab.style.display = '';
+    };
+  }, []);
+
+  // Handle URL query params
   useEffect(() => {
     const { q, topic, cid } = router.query;
     if (q) {
@@ -44,6 +55,13 @@ export default function ChatPage() {
       if (conv && conv.messages) setMessages(conv.messages);
     }
   }, [router.query]);
+
+  // Auto-scroll to latest message
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isLoading]);
 
   const persistConversation = useCallback((msgs, cid) => {
     const stored = JSON.parse(localStorage.getItem('rightsai_conversations') || '[]');
@@ -89,13 +107,34 @@ export default function ChatPage() {
       }
 
       const data = await res.json();
-      const botMsg = { role: 'model', content: data.summary || '', structured: data, time: formatTime() };
+      const botMsg = {
+        role: 'model',
+        content: data.summary || '',
+        structured: data,
+        time: formatTime(),
+      };
       const finalMessages = [...updatedMessages, botMsg];
       setMessages(finalMessages);
       setCurrentTopic(data.topic || '');
       persistConversation(finalMessages, cid);
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'model', content: err.message, structured: { topic: 'Error', summary: err.message }, time: formatTime() }]);
+      setMessages(prev => [
+        ...prev,
+        {
+          role: 'model',
+          content: err.message,
+          structured: {
+            topic: 'Error',
+            summary: err.message,
+            legislation: [],
+            keyRights: [],
+            nextSteps: [],
+            resources: [],
+            disclaimer: 'An error occurred. Please try again.',
+          },
+          time: formatTime(),
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
@@ -134,21 +173,26 @@ export default function ChatPage() {
       <Sidebar isMobileOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="chat-page__main">
+        {/* Mobile sidebar toggle */}
         <button
-          className="navbar__hamburger"
-          style={{ display: 'none', position: 'fixed', top: 12, left: 12, zIndex: 450, background: 'var(--color-surface-1)', borderRadius: 'var(--radius-md)', padding: '8px', border: '1px solid var(--color-border, #e0ddd5)' }}
+          className="chat-sidebar-toggle"
           onClick={() => setSidebarOpen(!sidebarOpen)}
           aria-label="Toggle sidebar"
         >
           {'\u2630'}
         </button>
 
+        {/* Sticky Header */}
         <ChatHeader topic={currentTopic} onClear={handleClear} onExport={handleExport} />
 
+        {/* Scrollable Messages Area */}
         {isEmpty ? (
           <div className="welcome-state">
             <h2 className="welcome-state__greeting">{WELCOME_GREETING} — how can I help?</h2>
-            <p className="welcome-state__sub">Ask me anything about Irish or EU law. I will give you a structured, plain English answer with legislation cited.</p>
+            <p className="welcome-state__sub">
+              Ask me anything about Irish or EU law. I will give you a structured, plain English answer
+              with legislation cited.
+            </p>
             <QuickActionCards onSelect={handleSend} />
             <div style={{ marginTop: 'var(--space-6)', width: '100%', maxWidth: '600px' }}>
               <SuggestedChips onSelect={handleSend} />
@@ -158,8 +202,13 @@ export default function ChatPage() {
           <MessageList messages={messages} isLoading={isLoading} onAction={handleAction} />
         )}
 
+        {/* Scroll anchor (auto-scroll target) */}
+        <div ref={messagesEndRef} />
+
+        {/* Suggested chips between messages and input (when messages exist) */}
         {!isEmpty && <SuggestedChips onSelect={handleSend} />}
 
+        {/* Sticky Input Bar */}
         <ChatInput onSend={handleSend} isLoading={isLoading} />
       </div>
     </div>

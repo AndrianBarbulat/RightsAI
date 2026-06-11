@@ -67,7 +67,7 @@ export default function Sidebar({ isMobileOpen, onClose }) {
   const sidebarContent = (
     <>
       <div className="sidebar__brand">
-        Rights<span className="sidebar__brand-gold">AI</span>
+        Chats
       </div>
 
       <div className="sidebar__section">

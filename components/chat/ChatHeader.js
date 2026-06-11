@@ -4,7 +4,7 @@ export default function ChatHeader({ topic, onClear, onExport }) {
   return (
     <div className="chat-header">
       <div className="chat-header__left">
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h3)', fontWeight: 700, color: 'var(--color-navy)' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--text-h3)', fontWeight: 700, color: 'var(--color-text-primary)' }}>
           Rights<span style={{ color: 'var(--color-gold)' }}>AI</span>
         </div>
         {topic && <Badge variant="gold-muted">{topic}</Badge>}

@@ -6,3 +6,5 @@ export default function UserMessage({ text, time }) {
     </div>
   );
 }
+
+
