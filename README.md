@@ -11,11 +11,15 @@ LawBot Ireland is a free, AI-powered legal information assistant that provides c
 - [Features](#features)
 - [How It Works](#how-it-works)
 - [Tech Stack](#tech-stack)
-- [Getting Started (Local Development)](#getting-started-local-development)
+- [Getting Started](#getting-started)
 - [Deploy to Vercel](#deploy-to-vercel)
 - [Project Structure](#project-structure)
+- [Components](#components)
+- [Custom Hooks](#custom-hooks)
+- [Types](#types)
 - [API Route](#api-route)
-- [Chat Widget Architecture](#chat-widget-architecture)
+- [Pages](#pages)
+- [Design Tokens](#design-tokens)
 - [Important Disclaimer](#important-disclaimer)
 - [License](#license)
 
@@ -23,49 +27,49 @@ LawBot Ireland is a free, AI-powered legal information assistant that provides c
 
 ## Features
 
-### Landing Page
-| Feature | Description |
-|---|---|
-| **Hero Section** | Headline "Irish Legal Questions, Answered Instantly" with a gold-highlighted call-to-action that opens the chat widget |
-| **Feature Cards** | Three cards: "Irish Law Only", "Plain English Answers", "Always Free" |
-| **Disclaimer** | Prominent section stating the bot provides general legal information, not legal advice |
-| **Recommended Resources** | Links to [citizensinformation.ie](https://www.citizensinformation.ie) and [flac.ie](https://www.flac.ie) |
-| **Footer** | Copyright notice and full legal disclaimer |
+### Landing Page (`/`)
+- **Hero Section** — "Irish Legal Questions, Answered Instantly" with gold CTA linking to `/chat`
+- **Trust Bar** — Four trust indicators: Based on Irish Statute Law, References Cited, Information Only, Always Free
+- **Feature Cards** — Three cards: "Irish Law Only", "Plain English Answers", "Always Free" with SVG icons
+- **How It Works** — Three numbered steps: Ask Your Question → Get an Instant Answer → Consult a Solicitor If Needed
+- **Topics Covered** — Eight topics grid: Employment Law, Tenancy Rights, Consumer Rights, Family Law, Criminal Law, GDPR & Data Rights, Immigration, Social Welfare
+- **Disclaimer Section** — Styled card explaining the information-only nature of the service
+- **Official Resources** — Links to citizensinformation.ie and flac.ie
+- **Footer** — Copyright with legal disclaimer
 
-### Chat Widget
-| Feature | Description |
-|---|---|
-| **Floating Action Button** | Gold circular button fixed to the bottom-right corner. Toggles the chat panel open/closed |
-| **Slide-Up Panel** | Animated panel with a navy header ("LawBot Ireland"), close button, message area, and input field |
-| **Message Bubbles** | User messages appear right-aligned in navy; bot responses appear left-aligned in cream/white |
-| **Typing Indicator** | Animated gold bouncing dots while the AI generates a response |
-| **Welcome Message** | On first open: "Hello! I'm LawBot Ireland. Ask me anything about Irish law…" |
-| **Markdown Rendering** | Bot responses are formatted with **headings**, **bold** text, *italic* text, bullet lists, numbered lists, horizontal dividers, and clickable hyperlinks |
-| **Conversation Context** | Full chat history is sent with each request so the AI maintains context across multiple turns |
-| **Enter to Send** | Press Enter to send (Shift+Enter for newline support ready) |
-| **Error Handling** | Graceful error messages displayed inline when the API is unavailable or rate-limited |
+### Chat Page (`/chat`)
+- **Full-height chat interface** with navy header and back button
+- **Welcome message** — "Hello! I am LawBot Ireland. Ask me anything about Irish law…"
+- **Message bubbles** — User messages right-aligned navy, assistant messages left-aligned white
+- **Typing indicator** — Three animated gold bouncing dots with "LawBot Ireland is researching" label
+- **Enter to send, Shift+Enter for new line**
+- **Disclaimer banner** displayed at the top of the chat
+- **Clear conversation** button in the header
+
+### Chat Widget (floating on all pages)
+- **Gold FAB** — Circular button fixed bottom-right
+- **Slide-up panel** — 400px wide, navy header, scrollable messages, textarea input
+- **Reuses same chat logic** via `useChat` hook
+- **Close button** and clear button in header
+- **Disclaimer** shown above the message area
 
 ### AI / Backend
-| Feature | Description |
-|---|---|
-| **Irish Law Exclusivity** | System prompt restricts the model to answer only questions about Irish law and legal processes in the Republic of Ireland |
-| **Legislative References** | Responses reference specific Irish Acts and statutory instruments where relevant (e.g., Residential Tenancies Act 2004, Bunreacht na hÉireann) |
-| **Source Suggestions** | When uncertain, the bot directs users to citizensinformation.ie or flac.ie instead of guessing |
-| **Structured Output** | Responses are organized with clear headings, bullet points, and section dividers for readability |
-| **Temperature 0.3** | Low temperature ensures consistent, reliable, and factual answers |
-| **Rate Limit Handling** | Returns a friendly message when the free-tier quota is exceeded instead of crashing |
+- **Irish Law Exclusivity** — System prompt restricts answers to Republic of Ireland law and EU regulations applicable to Ireland
+- **Structured JSON output** — Responses include topic, summary, legislation array, keyRights array, nextSteps array, resources array, disclaimer
+- **Conversation context** — Full history sent with each request
+- **Graceful error handling** — Inline error messages when API fails or is unavailable
+- **Model**: `gemini-3.1-flash-lite` at temperature 0.3
 
 ---
 
 ## How It Works
 
-1. **User asks a question** in the chat widget or clicks "Ask a Question Now" on the landing page
-2. **Chat widget opens** (if not already) and displays a welcome message on first visit
-3. **Message is sent** via `POST /api/chat` as JSON, including the full conversation history
-4. **API route validates** the request, loads `GEMINI_API_KEY` from the server environment, and calls the Gemini API
-5. **Gemini generates a response** using the system prompt, conversation history, and low-temperature settings
-6. **Response is returned** as JSON and rendered in the chat widget with Markdown formatting (headings, bold, lists, links)
-7. **Conversation continues** — each new message includes all prior messages so the AI maintains context
+1. **User asks a question** on the chat page or through the floating chat widget
+2. **Message is sent** via `POST /api/chat` with the full conversation history
+3. **API route** loads `GEMINI_API_KEY` from server environment and calls Gemini API
+4. **Gemini generates** a structured JSON response with summary, legislation, key rights, next steps, resources, and disclaimer
+5. **Response is rendered** as a chat message bubble with the summary text
+6. **Conversation continues** — each new message preserves all prior messages for context
 
 ---
 
@@ -74,29 +78,23 @@ LawBot Ireland is a free, AI-powered legal information assistant that provides c
 | Layer | Technology |
 |---|---|
 | **Framework** | [Next.js 14](https://nextjs.org/) (Pages Router) |
+| **Language** | TypeScript |
 | **AI SDK** | [`@google/genai`](https://www.npmjs.com/package/@google/genai) |
 | **AI Model** | `gemini-3.1-flash-lite` |
+| **Styling** | [Tailwind CSS v4](https://tailwindcss.com/) with CSS-first configuration |
+| **Animations** | [Framer Motion](https://www.framer.com/motion/) |
+| **Fonts** | [Merriweather](https://fonts.google.com/specimen/Merriweather) (headings) + [Inter](https://fonts.google.com/specimen/Inter) (body) + [JetBrains Mono](https://fonts.google.com/specimen/JetBrains+Mono) (code) |
 | **Hosting** | [Vercel](https://vercel.com/) |
-| **Styling** | Pure CSS with CSS custom properties (no framework) |
-| **Fonts** | [Merriweather](https://fonts.google.com/specimen/Merriweather) (headings) + [Inter](https://fonts.google.com/specimen/Inter) (body) |
-
-### Design Colours
-
-| Colour | Hex | Usage |
-|---|---|---|
-| Navy | `#0f2240` | Headers, user chat bubbles, footer |
-| Gold | `#c9973a` | CTAs, links, FAB button, accents |
-| Cream | `#f8f6f1` | Page background |
 
 ---
 
-## Getting Started (Local Development)
+## Getting Started
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/lawbot-ireland.git
-cd lawbot-ireland
+git clone https://github.com/AndrianBarbulat/RightsAI.git
+cd RightsAI
 ```
 
 ### 2. Install dependencies
@@ -137,24 +135,33 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server on port 3000 |
+| `npm run build` | Create an optimized production build |
+| `npm run start` | Start the production server |
+| `npm run lint` | Run Next.js linter |
+
 ---
 
 ## Deploy to Vercel
 
-### 1. Push your code to GitHub
+### 1. Push to GitHub
 
-Create a repository on GitHub and push this project to it.
+Push this project to a GitHub repository.
 
-### 2. Import the project in Vercel
+### 2. Import in Vercel
 
 1. Go to [Vercel](https://vercel.com/) and sign in
 2. Click **"Add New" → "Project"**
 3. Select your GitHub repository
-4. Vercel will auto-detect it's a Next.js project
+4. Vercel will auto-detect it is a Next.js project
 
-### 3. Set the environment variable
+### 3. Set environment variable
 
-In the Vercel project settings, go to **"Environment Variables"** and add:
+In Vercel project settings, go to **"Environment Variables"** and add:
 
 | Name | Value |
 |---|---|
@@ -162,31 +169,178 @@ In the Vercel project settings, go to **"Environment Variables"** and add:
 
 ### 4. Deploy
 
-Click **"Deploy"**. Vercel will build and deploy your app. Subsequent pushes to your main branch will trigger automatic redeploys.
+Click **"Deploy"**. Vercel builds and deploys the app. Subsequent pushes to `main` trigger automatic redeploys.
 
 ---
 
 ## Project Structure
 
 ```
-lawbot-ireland/
+rightsai/
 ├── components/
-│   └── ChatWidget.js          # Chat component (FAB, panel, messages, Markdown renderer)
+│   ├── ChatMessage.tsx            # Single message bubble (user/assistant)
+│   ├── ChatWidget.tsx             # Floating FAB + slide-up chat panel
+│   ├── DisclaimerBanner.tsx       # Reusable disclaimer (landing + chat variants)
+│   └── TypingIndicator.tsx        # Three animated gold bouncing dots
+├── hooks/
+│   └── useChat.ts                 # Chat state management hook
+├── types/
+│   └── chat.ts                    # TypeScript interfaces (Message, ChatState, etc.)
 ├── pages/
 │   ├── api/
-│   │   └── chat.js            # POST /api/chat — Gemini API proxy with system prompt
-│   ├── _app.js                # Next.js app wrapper (imports global CSS)
-│   ├── _document.js           # HTML document shell (fonts, meta tags)
-│   └── index.js               # Landing page (hero, features, disclaimer, resources, footer)
+│   │   └── chat.js                # POST /api/chat — Gemini API proxy with system prompt
+│   ├── _app.tsx                   # App wrapper (skip-to-main link, global CSS import)
+│   ├── _document.tsx              # HTML shell (font preconnect, lang, meta tags)
+│   ├── index.tsx                  # Landing page (hero, features, how it works, topics, disclaimer, resources, footer)
+│   └── chat.tsx                   # Dedicated full-page chat interface
 ├── styles/
-│   └── globals.css            # All styles — landing page, chat widget, Markdown formatting
-├── .env.example               # Template: GEMINI_API_KEY=your_key_here
-├── .env.local                 # Actual API key (gitignored, loaded by Next.js at runtime)
-├── .gitignore                 # Excludes .env.local, node_modules, .next, .vercel
-├── next.config.js             # Next.js configuration
-├── package.json               # Dependencies and scripts
-├── README.md                  # This file
-└── vercel.json                # Vercel serverless function config (30s timeout)
+│   └── globals.css                # Tailwind v4 CSS-first config with @theme, @layer, @utility
+├── public/
+│   ├── robots.txt
+│   └── sitemap.xml
+├── global.d.ts                    # Module declarations for CSS imports
+├── next-env.d.ts                  # Next.js TypeScript reference types
+├── tsconfig.json                  # TypeScript configuration
+├── tailwind.config.js             # Tailwind content paths (v4 legacy compat)
+├── postcss.config.js              # PostCSS with @tailwindcss/postcss plugin
+├── next.config.js                 # Next.js config (strict mode, i18n: en-IE)
+├── vercel.json                    # Vercel serverless function config
+├── .env.example                   # Template: GEMINI_API_KEY=your_key_here
+├── .gitignore
+├── package.json
+└── README.md
+```
+
+---
+
+## Components
+
+### `ChatMessage.tsx`
+
+Single message bubble component.
+
+**Props:**
+
+| Prop | Type | Description |
+|---|---|---|
+| `message` | `Message` | Message object with `role`, `content`, `timestamp` |
+
+**Behavior:**
+- User messages: right-aligned, navy background (`#0f2240`), white text, bubble radius
+- Assistant messages: left-aligned, white background, cream-dark border, navy text
+- Timestamp shown in muted text below the message
+- ARIA labels for accessibility
+
+### `ChatWidget.tsx`
+
+Floating chat bubble and slide-up panel.
+
+**State:**
+- `isOpen` — boolean controlling panel visibility
+- `input` — current textarea value
+- Uses `useChat` hook for messages, loading, error, sendMessage, clearChat
+
+**Behavior:**
+- Gold circular FAB button fixed bottom-right when closed
+- Full overlay panel (400px desktop, full-width mobile) when open
+- Navy header with LawBot Ireland branding, clear button, close button
+- Welcome message shown on empty state
+- Enter to send, Shift+Enter for new line
+- Auto-scroll to latest message
+- Auto-focus input on open
+- Disclaimer banner displayed above messages
+
+### `DisclaimerBanner.tsx`
+
+Reusable disclaimer component.
+
+**Props:**
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `variant` | `'landing' \| 'chat'` | `'landing'` | Controls styling — landing shows a styled box with heading, chat shows a compact pill banner |
+
+**Behavior:**
+- Landing variant: cream background, rounded-xl, border, heading + paragraph with links
+- Chat variant: gold-muted background, compact, centered text
+- Both variants include `role="alert"` for accessibility
+
+### `TypingIndicator.tsx`
+
+Animated loading indicator.
+
+**Behavior:**
+- Three gold dots with staggered `animate-bounce` delays (0ms, 150ms, 300ms)
+- "LawBot Ireland is researching" label
+- `aria-live="polite"` for screen readers
+
+---
+
+## Custom Hooks
+
+### `useChat.ts`
+
+Manages all chat state and API communication.
+
+**Returns:**
+
+| Value | Type | Description |
+|---|---|---|
+| `messages` | `Message[]` | Ordered array of all conversation messages |
+| `isLoading` | `boolean` | Whether a request is currently in flight |
+| `error` | `string \| null` | Error message if the last request failed |
+| `sendMessage` | `(text: string) => Promise<void>` | Sends a message to the API and appends the response |
+| `clearChat` | `() => void` | Resets messages, error, and loading state |
+
+**Behavior:**
+- Appends user message immediately (optimistic update)
+- Sends full conversation history to `/api/chat`
+- Parses structured JSON response
+- On error, appends an error message bubble and sets the error state
+- Sets loading to false in finally block
+
+---
+
+## Types
+
+### `Message`
+```typescript
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp?: string;
+}
+```
+
+### `ConversationHistory`
+```typescript
+interface ConversationHistory {
+  role: string;
+  parts: { text: string }[];
+}
+```
+
+### `ChatState`
+```typescript
+interface ChatState {
+  messages: Message[];
+  isLoading: boolean;
+  error: string | null;
+}
+```
+
+### `ChatAPIResponse`
+```typescript
+interface ChatAPIResponse {
+  topic?: string;
+  summary?: string;
+  legislation?: string[];
+  keyRights?: string[];
+  nextSteps?: string[];
+  resources?: string[];
+  disclaimer?: string;
+  error?: string;
+}
 ```
 
 ---
@@ -209,7 +363,7 @@ lawbot-ireland/
 
 | Field | Type | Description |
 |---|---|---|
-| `history` | Array | Ordered list of conversation turns. Each item has a `role` (`"user"` or `"model"`) and `parts` (array of `{ text }` objects) |
+| `history` | Array | Ordered list of conversation turns with `role` and `parts` |
 
 ### Response
 
@@ -217,15 +371,28 @@ lawbot-ireland/
 
 ```json
 {
-  "text": "Under the Residential Tenancies Act 2004, as amended, the minimum notice period…"
+  "topic": "Residential Tenancies",
+  "summary": "Under the Residential Tenancies Act 2004, as amended…",
+  "legislation": ["Residential Tenancies Act 2004", "Planning and Development (Housing) and Residential Tenancies Act 2016"],
+  "keyRights": ["Right to a rent book", "Right to 90 days notice for tenancies over 6 months"],
+  "nextSteps": ["Contact the RTB for dispute resolution", "Review your tenancy agreement"],
+  "resources": ["https://www.rtb.ie", "https://www.citizensinformation.ie/en/housing/renting_a_home/"],
+  "disclaimer": "This is general legal information, not legal advice."
 }
 ```
 
-**Error (400/405/429/500):**
+**Error (500):**
 
 ```json
 {
-  "error": "The service is receiving high demand right now. Please wait a moment and try again."
+  "error": "Failed to get response from AI",
+  "topic": "Error",
+  "summary": "Sorry, something went wrong while processing your question. Please try again.",
+  "legislation": [],
+  "keyRights": [],
+  "nextSteps": ["Try asking your question again in a moment."],
+  "resources": [],
+  "disclaimer": "This is general legal information, not legal advice."
 }
 ```
 
@@ -233,23 +400,20 @@ lawbot-ireland/
 
 | Code | Meaning |
 |---|---|
-| `200` | Success — response text returned |
-| `400` | Bad request — invalid JSON, missing fields, or content safety filter triggered |
-| `405` | Method not allowed — only POST is accepted |
-| `429` | Rate limited — free-tier quota exceeded |
-| `500` | Server error — API key not configured, model unavailable, or unexpected failure |
+| `200` | Success — structured JSON response returned |
+| `400` | Bad request — missing or invalid history array |
+| `405` | Method not allowed — only POST accepted |
+| `500` | Server error — API key missing, Gemini failure, or JSON parse failure |
 
 ### System Prompt
 
-The API route uses the following system instruction (set via `config.systemInstruction`):
-
-- Only answer questions related to Irish law and legal processes in the Republic of Ireland
-- Reference specific Irish Acts and statutory instruments where relevant
-- Clearly distinguish between general legal information and legal advice
-- Always remind users to consult a qualified solicitor for their specific situation
-- Use clear, plain English and avoid unnecessary legal jargon
-- If not confident, say so and suggest citizensinformation.ie or flac.ie
-- Never provide specific legal advice, make up legislation/case references, or guarantee any legal outcome
+The API uses a system instruction that:
+- Restricts answers to Irish law and EU law applicable in Ireland only
+- Returns structured JSON with topic, summary, legislation, keyRights, nextSteps, resources, disclaimer
+- Cites specific Irish legislation where possible
+- Uses plain, accessible English
+- States uncertainty rather than guessing
+- Always includes a disclaimer
 
 ### Model Configuration
 
@@ -260,50 +424,73 @@ The API route uses the following system instruction (set via `config.systemInstr
 | Top-P | `0.9` |
 | Top-K | `40` |
 | Max Output Tokens | `2048` |
+| Response MIME Type | `application/json` |
 
 ---
 
-## Chat Widget Architecture
+## Pages
 
-The `ChatWidget` component (`components/ChatWidget.js`) is a self-contained React component with no external dependencies beyond React itself.
+### `/` — Landing Page
 
-### State Management
+**Sections (top to bottom):**
+1. Sticky navy navbar with "LawBot Ireland" branding and "Start Chatting" CTA
+2. Navy hero with headline, subtitle, and "Ask a Question" gold button
+3. Trust bar (cream-dark) with four checkmark items
+4. "Why LawBot Ireland?" — three feature cards in responsive grid
+5. "How It Works" — three numbered step circles
+6. "Topics Covered" — eight topic cards in grid
+7. Disclaimer section with styled card and resource links
+8. Official resources — Citizens Information and FLAC cards
+9. Navy footer with copyright and disclaimer
 
-| State | Type | Purpose |
+**Data:** All content is static — no API calls, no server-side rendering needed.
+
+### `/chat` — Full Chat Page
+
+**Layout:**
+1. Sticky navy header with back arrow, "LawBot Ireland", and Clear button
+2. Compact disclaimer banner
+3. Scrollable message area (max-w-3xl centered)
+4. Welcome message shown when no messages exist
+5. Typing indicator while loading
+6. Sticky input area with textarea and send button
+7. "Press Enter to send, Shift+Enter for new line" hint
+
+**State:** Managed via `useChat` hook — no external state management library.
+
+---
+
+## Design Tokens
+
+### Colours
+
+| Token | Hex | Usage |
 |---|---|---|
-| `isOpen` | Boolean | Whether the chat panel is visible |
-| `messages` | Array | Ordered list of `{ role, content }` objects |
-| `input` | String | Current text in the input field |
-| `isLoading` | Boolean | Whether a request is in flight (shows typing indicator) |
+| `navy` | `#0f2240` | Headers, user chat bubbles, footer |
+| `navy-dark` | `#091829` | Darker navy variant |
+| `navy-light` | `#1a3a5c` | Secondary text on light backgrounds |
+| `gold` | `#c9973a` | CTAs, links, FAB button, accents |
+| `gold-light` | `#e8bc6a` | Hover states |
+| `gold-muted` | `#f5e6c8` | Disclaimer banner backgrounds |
+| `cream` | `#f8f6f1` | Page background |
+| `cream-dark` | `#ede9e0` | Section offsets, card borders |
 
-### Markdown Rendering
+### Typography
 
-A built-in `markdownToHtml()` function converts Gemini's Markdown output into styled HTML:
+| Token | Font | Usage |
+|---|---|---|
+| `font-heading` | Merriweather, Georgia, serif | Headlines, page titles, section headers |
+| `font-body` | Inter, system-ui, sans-serif | Body copy, chat messages, form elements |
+| `font-code` | JetBrains Mono, Consolas, monospace | Code blocks, legislation references |
 
-| Markdown | Rendered Output |
-|---|---|
-| `### Heading` | `<h4>` with navy colour, proper margins |
-| `**bold text**` | `<strong>` with navy colour |
-| `*italic text*` | `<em>` with italic style |
-| `* List item` or `- List item` | `<ul><li>` with disc bullets |
-| `[link text](https://…)` | `<a>` with gold colour, opens in new tab |
-| `---` or `***` | `<hr>` divider line |
-| Double newlines | Paragraph breaks with proper spacing |
-
-The HTML is injected via `dangerouslySetInnerHTML` within a `span.chat-markdown` container. Since Gemini's output contains only Markdown (no raw HTML), this is safe from XSS injection.
-
-### Edge Cases Covered
-
-| Scenario | Behaviour |
-|---|---|
-| Empty input or loading | Send button disabled |
-| API returns non-200 | Error bubble displayed inline with the error message |
-| Network failure | Error bubble: "Sorry, something went wrong…" |
-| First chat open | Welcome message shown automatically |
-| Panel closed/reopened | Message history preserved during session |
-| Multiple rapid sends | Input disabled while loading; button disabled |
-| Enter key | Sends message (Shift+Enter available for future multiline) |
-| Scroll | Auto-scrolls to latest message or typing indicator |
+### Accessibility
+- Skip-to-main-content link on every page
+- All interactive elements keyboard-navigable
+- ARIA labels on buttons, inputs, and chat messages
+- `aria-live="polite"` on typing indicator
+- `role="alert"` on disclaimer banners
+- `prefers-reduced-motion` respected to disable animations
+- Colour contrast meets WCAG 2.1 AA standards
 
 ---
 
