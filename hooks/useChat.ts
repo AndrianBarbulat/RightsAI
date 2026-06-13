@@ -39,7 +39,7 @@ export function useChat() {
       const data: ChatAPIResponse = await res.json();
       const botMsg: Message = {
         role: 'assistant',
-        content: data.summary || JSON.stringify(data),
+        content: JSON.stringify(data),
         timestamp: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, botMsg]);
