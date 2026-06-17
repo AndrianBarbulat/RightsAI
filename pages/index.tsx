@@ -1,17 +1,18 @@
 import Head from 'next/head';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import DisclaimerBanner from '../components/DisclaimerBanner';
 import ChatWidget from '../components/ChatWidget';
+import DarkModeToggle from '../components/DarkModeToggle';
 
 const topics = [
-  'Employment Law',
-  'Tenancy Rights',
-  'Consumer Rights',
-  'Family Law',
-  'Criminal Law',
-  'GDPR & Data Rights',
-  'Immigration',
-  'Social Welfare',
+  { label: 'Employment Law', query: 'What are my rights as an employee in Ireland?' },
+  { label: 'Tenancy Rights', query: 'What are my tenant rights in Ireland?' },
+  { label: 'Consumer Rights', query: 'What are my consumer rights for faulty goods?' },
+  { label: 'Family Law', query: 'What are the grounds for divorce in Ireland?' },
+  { label: 'Criminal Law', query: 'What should I know about criminal law in Ireland?' },
+  { label: 'GDPR & Data Rights', query: 'How does GDPR apply to me in Ireland?' },
+  { label: 'Immigration', query: 'What are the immigration requirements for Ireland?' },
+  { label: 'Social Welfare', query: 'What social welfare benefits am I entitled to?' },
 ];
 
 const features = [
@@ -35,7 +36,7 @@ const features = [
   },
   {
     title: 'Always Free',
-    desc: 'Access to Irish legal information should not have a price tag. LawBot Ireland is and always will be free.',
+    desc: 'Access to Irish legal information should not have a price tag. RightsAI is and always will be free.',
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
@@ -45,29 +46,26 @@ const features = [
 ];
 
 const steps = [
-  {
-    number: 1,
-    title: 'Ask Your Question',
-    desc: 'Type any question about Irish law in plain English. No legal knowledge required.',
-  },
-  {
-    number: 2,
-    title: 'Get an Instant Answer',
-    desc: 'Receive a clear, structured response with relevant legislation cited in plain language.',
-  },
-  {
-    number: 3,
-    title: 'Consult a Solicitor If Needed',
-    desc: 'If your situation requires legal advice, we will point you to the right official resources.',
-  },
+  { number: 1, title: 'Ask Your Question', desc: 'Type any question about Irish law in plain English. No legal knowledge required.' },
+  { number: 2, title: 'Get an Instant Answer', desc: 'Receive a clear, structured response with relevant legislation cited in plain language.' },
+  { number: 3, title: 'Consult a Solicitor If Needed', desc: 'If your situation requires legal advice, we will point you to the right official resources.' },
 ];
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleTopicClick = (query: string) => {
+    router.push(`/chat?q=${encodeURIComponent(query)}`);
+  };
+
   return (
     <>
       <Head>
-        <title>LawBot Ireland — Irish Legal Questions, Answered Instantly</title>
-        <meta name="description" content="Get clear, plain-English answers based on Irish law. Free to use. Available 24/7." />
+        <title>RightsAI — Irish Legal Questions, Answered Instantly</title>
+        <meta name="description" content="Get clear, plain-English answers based on Irish law. Free to use. Available 24/7. RightsAI provides general legal information, not legal advice." />
+        <meta property="og:title" content="RightsAI — Irish Legal Questions, Answered Instantly" />
+        <meta property="og:description" content="Get clear, plain-English answers based on Irish law. Free to use. Available 24/7." />
+        <meta property="og:type" content="website" />
       </Head>
 
       <div className="min-h-screen bg-cream font-body">
@@ -75,21 +73,22 @@ export default function Home() {
         <header className="bg-navy text-white sticky top-0 z-40">
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <span className="font-heading text-xl font-bold">
-              LawBot <span className="text-gold">Ireland</span>
+              Rights<span className="text-gold">AI</span>
             </span>
-            <nav>
-              <Link
+            <nav className="flex items-center gap-3">
+              <DarkModeToggle />
+              <a
                 href="/chat"
-                className="bg-gold text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gold-light transition-colors"
+                className="bg-gold text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gold-light transition-colors focus:outline-none focus:ring-2 focus:ring-gold-light focus:ring-offset-2 focus:ring-offset-navy"
               >
                 Start Chatting
-              </Link>
+              </a>
             </nav>
           </div>
         </header>
 
         <main>
-          {/* Hero Section */}
+          {/* Hero */}
           <section className="bg-navy text-white py-16 md:py-24">
             <div className="max-w-4xl mx-auto px-4 text-center">
               <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4">
@@ -99,12 +98,12 @@ export default function Home() {
                 Get clear, plain-English answers based on Irish law. Free to use. Available 24/7.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link
+                <a
                   href="/chat"
-                  className="bg-gold text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-gold-light transition-colors"
+                  className="bg-gold text-white px-8 py-3 rounded-lg text-lg font-medium hover:bg-gold-light transition-colors focus:outline-none focus:ring-2 focus:ring-gold-light focus:ring-offset-2 focus:ring-offset-navy"
                 >
                   Ask a Question
-                </Link>
+                </a>
               </div>
             </div>
           </section>
@@ -114,7 +113,7 @@ export default function Home() {
             <div className="max-w-4xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
               {['Based on Irish Statute Law', 'References Cited', 'Information Only', 'Always Free'].map((item) => (
                 <div key={item} className="text-sm text-navy-light font-medium">
-                  &#10003; {item}
+                  <span className="text-gold" aria-hidden="true">&#10003;</span> {item}
                 </div>
               ))}
             </div>
@@ -124,20 +123,13 @@ export default function Home() {
           <section className="py-16 md:py-20">
             <div className="max-w-5xl mx-auto px-4">
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-navy text-center mb-12">
-                Why LawBot Ireland?
+                Why RightsAI?
               </h2>
               <div className="grid md:grid-cols-3 gap-6">
                 {features.map((feature) => (
-                  <div
-                    key={feature.title}
-                    className="bg-white border border-cream-dark rounded-xl p-6 text-center hover:shadow-md transition-shadow"
-                  >
-                    <div className="text-gold mb-4 flex justify-center" aria-hidden="true">
-                      {feature.icon}
-                    </div>
-                    <h3 className="font-heading text-lg font-semibold text-navy mb-2">
-                      {feature.title}
-                    </h3>
+                  <div key={feature.title} className="bg-white border border-cream-dark rounded-xl p-6 text-center hover:shadow-md transition-shadow">
+                    <div className="text-gold mb-4 flex justify-center" aria-hidden="true">{feature.icon}</div>
+                    <h3 className="font-heading text-lg font-semibold text-navy mb-2">{feature.title}</h3>
                     <p className="text-sm text-navy-light leading-relaxed">{feature.desc}</p>
                   </div>
                 ))}
@@ -148,18 +140,12 @@ export default function Home() {
           {/* How It Works */}
           <section className="py-16 md:py-20 bg-cream-dark">
             <div className="max-w-5xl mx-auto px-4">
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-navy text-center mb-12">
-                How It Works
-              </h2>
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-navy text-center mb-12">How It Works</h2>
               <div className="grid md:grid-cols-3 gap-8">
                 {steps.map((step) => (
                   <div key={step.number} className="text-center">
-                    <div className="w-12 h-12 bg-gold text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                      {step.number}
-                    </div>
-                    <h3 className="font-heading text-lg font-semibold text-navy mb-2">
-                      {step.title}
-                    </h3>
+                    <div className="w-12 h-12 bg-gold text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">{step.number}</div>
+                    <h3 className="font-heading text-lg font-semibold text-navy mb-2">{step.title}</h3>
                     <p className="text-sm text-navy-light leading-relaxed">{step.desc}</p>
                   </div>
                 ))}
@@ -170,23 +156,22 @@ export default function Home() {
           {/* Topics Covered */}
           <section className="py-16 md:py-20">
             <div className="max-w-5xl mx-auto px-4">
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-navy text-center mb-8">
-                Topics Covered
-              </h2>
+              <h2 className="font-heading text-2xl md:text-3xl font-bold text-navy text-center mb-8">Topics Covered</h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto">
                 {topics.map((topic) => (
-                  <div
-                    key={topic}
-                    className="bg-white border border-cream-dark rounded-lg px-4 py-3 text-center text-sm text-navy font-medium hover:border-gold transition-colors"
+                  <button
+                    key={topic.label}
+                    onClick={() => handleTopicClick(topic.query)}
+                    className="bg-white border border-cream-dark rounded-lg px-4 py-3 text-center text-sm text-navy font-medium hover:border-gold hover:shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-1"
                   >
-                    {topic}
-                  </div>
+                    {topic.label}
+                  </button>
                 ))}
               </div>
             </div>
           </section>
 
-          {/* Disclaimer Section */}
+          {/* Disclaimer */}
           <section className="py-12 bg-cream-dark">
             <DisclaimerBanner variant="landing" />
           </section>
@@ -194,25 +179,13 @@ export default function Home() {
           {/* Resources */}
           <section className="py-12">
             <div className="max-w-3xl mx-auto px-4 text-center">
-              <h2 className="font-heading text-xl font-semibold text-navy mb-6">
-                Official Resources
-              </h2>
+              <h2 className="font-heading text-xl font-semibold text-navy mb-6">Official Resources</h2>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <a
-                  href="https://www.citizensinformation.ie"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-white border border-cream-dark rounded-lg px-6 py-4 text-navy hover:border-gold transition-colors"
-                >
+                <a href="https://www.citizensinformation.ie" target="_blank" rel="noopener noreferrer" className="bg-white border border-cream-dark rounded-lg px-6 py-4 text-navy hover:border-gold transition-colors focus:outline-none focus:ring-2 focus:ring-gold">
                   <span className="font-heading font-semibold">Citizens Information</span>
                   <p className="text-xs text-navy-light mt-1">citizensinformation.ie</p>
                 </a>
-                <a
-                  href="https://www.flac.ie"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-white border border-cream-dark rounded-lg px-6 py-4 text-navy hover:border-gold transition-colors"
-                >
+                <a href="https://www.flac.ie" target="_blank" rel="noopener noreferrer" className="bg-white border border-cream-dark rounded-lg px-6 py-4 text-navy hover:border-gold transition-colors focus:outline-none focus:ring-2 focus:ring-gold">
                   <span className="font-heading font-semibold">FLAC</span>
                   <p className="text-xs text-navy-light mt-1">Free Legal Advice Centres</p>
                 </a>
@@ -224,17 +197,12 @@ export default function Home() {
         {/* Footer */}
         <footer className="bg-navy text-white py-8">
           <div className="max-w-4xl mx-auto px-4 text-center">
-            <p className="text-sm text-white/60">
-              &copy; {new Date().getFullYear()} LawBot Ireland. All rights reserved.
-            </p>
-            <p className="text-xs text-white/40 mt-1">
-              LawBot Ireland provides general legal information only. Not a substitute for professional legal advice.
-            </p>
+            <p className="text-sm text-white/60">&copy; {new Date().getFullYear()} RightsAI. All rights reserved.</p>
+            <p className="text-xs text-white/40 mt-1">RightsAI provides general legal information only. Not a substitute for professional legal advice.</p>
           </div>
         </footer>
       </div>
 
-      {/* Floating Chat Widget */}
       <ChatWidget />
     </>
   );
